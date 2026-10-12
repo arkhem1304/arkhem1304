@@ -1,1 +1,140 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#100d17">
+<meta name="description" content="Ein mystisches Online-Liar’s-Dice-Spiel. Erstelle private Räume und spiele direkt im Browser mit Freunden.">
+<title>Layers Dice — The Veil</title>
+<style>
+:root{color-scheme:dark;--bg:#100d17;--panel:rgba(27,21,37,.88);--panel2:#30243d;--line:#574367;--text:#f7f0ff;--muted:#b7a9c8;--accent:#c6a0ff;--accent2:#69e4db;--gold:#e6c37a;--red:#ff7b91;--green:#83e0b4;--shadow:0 20px 60px #05030a99}
+*{box-sizing:border-box}html{min-height:100%;background:var(--bg)}body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 50% -10%,#4a2c65 0,transparent 40%),radial-gradient(ellipse at 5% 40%,#203e4a55 0,transparent 32%),radial-gradient(ellipse at 100% 75%,#6e3a6850 0,transparent 30%),linear-gradient(160deg,#100d17,#17101f 55%,#0c111a);background-attachment:fixed;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.14;background-image:radial-gradient(#e9d5ff 0.6px,transparent .8px);background-size:31px 31px;mask-image:linear-gradient(to bottom,#000,transparent 88%)}
+main{position:relative;width:min(1060px,100%);margin:auto;padding:24px 14px 44px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;padding:8px 2px}.brand{font-size:1.22rem;font-weight:950;letter-spacing:.16em;text-transform:uppercase;display:flex;align-items:center;gap:10px}.brand:before{content:"✧";display:grid;place-items:center;width:38px;height:38px;border:1px solid #b994e899;border-radius:12px;color:var(--accent);font-size:1.45rem;background:linear-gradient(145deg,#38234a,#17121f);box-shadow:0 0 24px #9e6fe333,inset 0 0 14px #d5b5ff16}.brand span{color:var(--accent);text-shadow:0 0 18px #b78cff66}.pill{border:1px solid #b994e84d;padding:8px 12px;border-radius:999px;color:#d4c3e7;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;background:#21192dbb;white-space:nowrap}
+.panel{position:relative;background:linear-gradient(145deg,rgba(36,27,49,.93),rgba(20,18,30,.94));border:1px solid #7c5b9855;border-radius:22px;padding:18px;margin:13px 0;box-shadow:var(--shadow),inset 0 1px #ffffff08;backdrop-filter:blur(14px);overflow:hidden}.panel:after{content:"";position:absolute;left:18px;right:18px;top:0;height:1px;background:linear-gradient(90deg,transparent,#d6b6ff88,transparent);pointer-events:none}#home{padding:clamp(22px,5vw,48px);background:radial-gradient(ellipse at 82% 15%,#754ca82b,transparent 35%),linear-gradient(135deg,#251a34f2,#151522f5);border-color:#b994e866}#home:before{content:"✦";position:absolute;right:7%;top:12%;font-size:clamp(6rem,18vw,12rem);line-height:1;color:#d2adff0c;text-shadow:0 0 45px #b78cff20;pointer-events:none}
+h1,h2,h3,p{margin-top:0}h1{font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:clamp(1.75rem,5vw,3rem);line-height:1.08;letter-spacing:-.035em;margin-bottom:12px}h2{font-size:1.03rem;letter-spacing:.07em;text-transform:uppercase;margin-bottom:14px;color:#e9d9ff}p,.muted{color:var(--muted);line-height:1.6}#home>p{max-width:620px;font-size:1rem}#home h1{max-width:680px}#home h1:after{content:"";display:block;width:90px;height:2px;margin-top:18px;background:linear-gradient(90deg,var(--accent),transparent)}
+label{display:block;font-size:.8rem;font-weight:750;letter-spacing:.06em;text-transform:uppercase;color:#c9b7dc;margin:14px 0 7px}input,select,button{font:inherit}input,select{width:100%;border:1px solid #634c78;background:#100d18d9;color:var(--text);padding:14px 13px;border-radius:13px;outline:none;transition:border-color .18s,box-shadow .18s}input::placeholder{color:#857495}input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #c6a0ff20}button{border:1px solid transparent;border-radius:13px;padding:12px 15px;font-weight:800;letter-spacing:.015em;cursor:pointer;min-height:47px;color:#17101f;background:linear-gradient(135deg,#ddc3ff,#a67be0);box-shadow:0 6px 22px #a879d52b;transition:transform .15s,filter .15s,box-shadow .15s}button:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.08);box-shadow:0 9px 26px #a879d544}button:active:not(:disabled){transform:translateY(0)}button.secondary{background:#2a2136;color:#e9ddf8;border-color:#624a78;box-shadow:none}button.danger{background:linear-gradient(135deg,#7b2f4b,#4c213c);color:#ffe8f0;border-color:#a84f6d;box-shadow:0 6px 20px #5a193933}button:disabled{opacity:.38;cursor:not-allowed;box-shadow:none}
+.row{display:flex;gap:9px;align-items:center}.row>*{flex:1;min-width:0}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px}.hidden{display:none!important}.notice{padding:12px 14px;border-radius:13px;background:#2a2440;color:#eee2ff;border:1px solid #7c60a1;margin:12px 0;line-height:1.45}.notice.error{background:#421f32;color:#ffdbe6;border-color:#87445e}.notice.success{background:#173a38;color:#c7fff0;border-color:#34796f}.roomcode{font-size:clamp(1.3rem,4vw,1.8rem);font-weight:950;letter-spacing:.2em;color:var(--gold);text-shadow:0 0 20px #e6c37a38}.players{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:9px}.player{border:1px solid #574367;background:linear-gradient(145deg,#241c30,#171521);padding:13px;border-radius:15px;min-width:0}.player.current{border-color:var(--accent2);box-shadow:inset 0 0 0 1px #69e4db66,0 0 24px #69e4db14}.player .name{font-weight:850;overflow-wrap:anywhere;margin-bottom:5px}.player small{color:var(--muted);line-height:1.4}.you{font-size:.72rem;color:var(--accent)}
+.dice{display:flex;flex-wrap:wrap;gap:11px;margin:16px 0}.die{width:clamp(48px,13vw,62px);height:clamp(50px,14vw,64px);border-radius:16px;border:1px solid #f0ddff;background:radial-gradient(circle at 30% 20%,#fff,#e3d5f5 58%,#a98ec7);color:#2b1a3a;display:flex;align-items:center;justify-content:center;font-weight:950;font-size:1.7rem;box-shadow:inset 0 -5px 0 #8b6ea8,0 0 22px #bd8cff25;position:relative;transition:transform .2s}.die:nth-child(odd){transform:rotate(-2deg)}.die:nth-child(even){transform:rotate(2deg)}.die.joker{background:radial-gradient(circle at 30% 20%,#e5ffff,#82e8df 58%,#318f91);border-color:#aafff5;color:#082f36;box-shadow:inset 0 -5px 0 #337d82,0 0 24px #69e4db35}.die.removed{display:none}.die button{position:absolute;right:-7px;top:-8px;min-height:23px;width:23px;height:23px;padding:0;border-radius:50%;font-size:.75rem;background:#8c3652;color:white;border:1px solid #ffb5cb;box-shadow:none}.bidline{display:grid;grid-template-columns:1fr 1fr;gap:9px}.bidline button{grid-column:1/-1}.bidbox{padding:16px;background:linear-gradient(135deg,#100d18,#21182c);border:1px solid #574367;border-radius:15px;margin:12px 0}.bidvalue{font-family:Georgia,"Times New Roman",serif;font-size:1.5rem;font-weight:800;color:var(--gold);margin-top:4px}.foot{font-size:.78rem;color:#9383a7;text-align:center;margin-top:28px;letter-spacing:.06em}.foot:before{content:"✧  ✧  ✧";display:block;color:#9678b6;margin-bottom:9px;letter-spacing:.4em}
+#start{width:100%;margin-top:4px}#myDicePanel{background:radial-gradient(ellipse at 50% 0,#5a3a7124,transparent 60%),linear-gradient(145deg,#241a31f2,#151520f5)}#turnPanel{border-color:#69e4db55;background:linear-gradient(145deg,#1c2630f2,#171521f5)}#turnPanel h2{color:#aaf7ee}
+@media(min-width:700px){main{padding:30px 20px 52px}.panel{padding:23px;margin:15px 0}.layout{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}.layout .panel{margin:0}#home{padding:54px}.top{margin-bottom:28px}}
+@media(max-width:420px){main{padding:15px 10px 32px}.top{align-items:flex-start}.brand{font-size:1rem;letter-spacing:.1em}.brand:before{width:32px;height:32px}.pill{font-size:.65rem;padding:7px 8px}.panel{padding:15px;border-radius:18px}.actions{grid-template-columns:1fr}.row{align-items:flex-start}.roomcode{letter-spacing:.13em}.bidline{gap:7px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
 
+/* Pirate-at-sea polish + animated dice */
+body{background:radial-gradient(ellipse at 50% -10%,#35535d66,transparent 42%),radial-gradient(ellipse at 85% 40%,#7d55201b,transparent 35%),linear-gradient(180deg,#0b1720 0%,#10111b 48%,#170f16 100%)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;background:repeating-linear-gradient(173deg,transparent 0 27px,#5e9aa0 28px,#5e9aa0 29px,transparent 30px 52px);mask-image:linear-gradient(transparent,#000 35%,transparent 95%)}
+.brand:before{content:"☠";display:grid;place-items:center;font-size:1.25rem;color:#f2d18c;background:linear-gradient(145deg,#674a2a,#201b1a);border:1px solid #bd9558;box-shadow:0 0 20px #d7a54a22}
+.panel{border-color:#67513a;background:linear-gradient(145deg,#1b2024ed,#211a20f5);box-shadow:0 22px 60px #0008,inset 0 1px #d6b27a0b}
+button{background:linear-gradient(135deg,#e2c17c,#a87939);color:#21160d;border-color:#f0d89b}button.secondary{background:linear-gradient(135deg,#283b42,#1b242c);color:#e5f5f2;border-color:#4f7776}button.danger{background:linear-gradient(135deg,#853f3c,#49252b);color:#fff1e9;border-color:#b65e55}
+.die{position:relative;animation:rollIn .68s cubic-bezier(.18,.85,.28,1.18) both;transform-style:preserve-3d;background:linear-gradient(145deg,#fff5d8,#c7a86d 65%,#8b6739);border-color:#ffe6a4;color:#352414;box-shadow:inset 0 -5px 0 #88643c,0 8px 18px #0007,0 0 14px #e8c16b20}
+.die:nth-child(2){animation-delay:.07s}.die:nth-child(3){animation-delay:.14s}.die:nth-child(4){animation-delay:.21s}.die:nth-child(5){animation-delay:.28s}.die:nth-child(6){animation-delay:.35s}.die.joker{background:radial-gradient(circle at 30% 20%,#e5ffff,#83d9d2 58%,#286c73);border-color:#b2fff4;color:#062a30;box-shadow:inset 0 -5px 0 #276a70,0 0 24px #69e4db35;}
+@keyframes rollIn{0%{opacity:.25;transform:translateY(-38px) rotateX(200deg) rotateZ(-90deg) scale(.65)}45%{opacity:1;transform:translateY(7px) rotateX(-35deg) rotateZ(22deg) scale(1.08)}72%{transform:translateY(-3px) rotateZ(-9deg)}100%{transform:translateY(0) rotateZ(0) scale(1)}}
+.rule-banner{margin-top:12px;padding:12px 14px;border-radius:12px;border:1px solid #d9ad5d66;background:linear-gradient(120deg,#5a4024aa,#26221f);color:#ffe6ac;font-size:.9rem}
+.top .pill{border-color:#967849;color:#e9d5a5}
+@media(prefers-reduced-motion:reduce){.die{animation:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><div class="brand">LAYERS <span>DICE</span></div><div class="pill">THE VEIL · 2–10 Spieler</div></div>
+  <div id="notice" class="notice hidden" role="status"></div>
+  <section id="home" class="panel">
+    <div class="pill" style="display:inline-flex;margin-bottom:18px;color:var(--accent2);border-color:#69e4db55">✦ Das Würfelritual beginnt ✦</div>
+    <h1>Traue keinem Würfel.<br>Vertraue deinem Bluff.</h1>
+    <p>Betritt die verfluchten Gewässer, versammle deine Crew und wage dein Gebot. Jeder beginnt mit fünf Würfeln. In normalen Runden zählen Joker als Joker-Wildcards; wer nur noch einen Würfel hat, eröffnet die Sonderrunde und legt den Zahlenwert fest — Joker zählen dort nicht.</p>
+    <label for="name">Dein Spielername</label><input id="name" maxlength="18" placeholder="z. B. Alex" autocomplete="nickname">
+    <div class="actions"><button id="create">Raum erstellen</button><button id="showJoin" class="secondary">Code eingeben</button></div>
+    <div id="joinForm" class="hidden">
+      <label for="codeInput">Einladungscode</label><input id="codeInput" maxlength="5" placeholder="ABCDE" autocapitalize="characters">
+      <button id="join" style="width:100%;margin-top:10px">Raum beitreten</button>
+    </div>
+  </section>
+
+  <section id="room" class="hidden">
+    <div class="panel">
+      <div class="row" style="align-items:flex-start"><div><h1>Der verborgene Spielraum</h1><p style="margin:0">Teile diesen Code mit deinen Freunden.</p></div><div style="text-align:right"><div class="roomcode" id="roomCode">-----</div><button id="copyCode" class="secondary" style="margin-top:8px;min-height:36px;padding:7px 10px">Code kopieren</button></div></div>
+      <div id="lobbyControls" style="margin-top:14px"><button id="start" style="width:100%" disabled>Spiel starten (mind. 2 Spieler)</button></div>
+    </div>
+    <div class="layout">
+      <div class="panel">
+        <h2>Die Runde</h2><div id="players" class="players"></div>
+        <div class="bidbox"><div class="muted">Aktuelles Gebot</div><div id="currentBid" class="bidvalue">Noch kein Gebot</div><div id="turnLabel" class="muted"></div></div>
+        <div id="gameMessage" class="muted"></div><div id="ruleBanner" class="rule-banner hidden"></div>
+      </div>
+      <div class="panel" id="myDicePanel">
+        <h2>Deine Würfel <span id="diceCountLabel" class="muted"></span></h2>
+        <p class="muted">Deine Würfe bleiben geheim. Tippe auf ×, um einen Würfel nur aus deiner Anzeige auszublenden. Die Würfel rollen bei jedem neuen Wurf animiert über den Tisch.</p>
+        <div id="myDice" class="dice"></div>
+        <div class="actions"><button id="restoreDice" class="secondary">Alle Würfel anzeigen</button><button id="hideDice" class="secondary">Alle ausblenden</button></div>
+      </div>
+    </div>
+    <div class="panel" id="turnPanel">
+      <h2>Dein nächster Zug</h2>
+      <p id="turnHelp" class="muted">Warte, bis du an der Reihe bist.</p>
+      <div class="bidline">
+        <div><label for="quantity">Anzahl</label><select id="quantity"></select></div>
+        <div><label for="face">Wert</label><select id="face"><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="J">Joker</option></select></div>
+        <button id="bidButton">Gebot abgeben</button>
+        <button id="challengeButton" class="danger">Gebot anzweifeln</button>
+      </div>
+    </div>
+  </section>
+  <div class="foot">LAYERS DICE · THE VEIL · Private Räume · Direkt im Browser</div>
+</main>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io();
+const $ = id => document.getElementById(id);
+let state = null, hiddenDice = new Set(), joined = false, previousDiceKey = '';
+const tokenKey = 'layersDicePlayerToken';
+let token = localStorage.getItem(tokenKey);
+if (!token) { token = (crypto.randomUUID ? crypto.randomUUID() : 'p'+Date.now()+Math.random().toString(36).slice(2)); localStorage.setItem(tokenKey, token); }
+const savedSession = JSON.parse(localStorage.getItem('layersDiceSession') || 'null');
+function showNotice(message, type='info') {
+  const el=$('notice'); el.textContent=message; el.className='notice '+(type==='error'?'error':type==='success'?'success':'');
+  if (type !== 'error') setTimeout(()=>{ if(el.textContent===message) el.classList.add('hidden'); },4500);
+}
+function getName(){return $('name').value.trim();}
+$('create').onclick=()=>{if(!getName())return showNotice('Bitte gib zuerst einen Namen ein.','error');socket.emit('createRoom',{name:getName(),token});};
+$('showJoin').onclick=()=>{$('joinForm').classList.toggle('hidden');};
+$('join').onclick=()=>{if(!getName())return showNotice('Bitte gib zuerst einen Namen ein.','error');socket.emit('joinRoom',{name:getName(),code:$('codeInput').value,token});};
+$('codeInput').addEventListener('input',e=>e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,5));
+$('copyCode').onclick=async()=>{try{await navigator.clipboard.writeText(state.code);showNotice('Einladungscode kopiert.','success');}catch{showNotice('Dein Einladungscode: '+state.code);}};
+$('start').onclick=()=>socket.emit('startGame');
+$('restoreDice').onclick=()=>{hiddenDice.clear();renderDice(false);};
+$('hideDice').onclick=()=>{hiddenDice=new Set((state?.players.find(p=>p.id===state.meId)?.dice||[]).map((_,i)=>i));renderDice(false);};
+$('bidButton').onclick=()=>socket.emit('bid',{quantity:Number($('quantity').value),face:$('face').value});
+$('challengeButton').onclick=()=>{if(confirm('Bist du sicher, dass du das aktuelle Gebot anzweifeln willst?'))socket.emit('challenge');};
+socket.on('joined',({code,token:serverToken})=>{
+  joined=true; if(serverToken){token=serverToken;localStorage.setItem(tokenKey,token);}
+  localStorage.setItem('layersDiceSession',JSON.stringify({code,token}));
+  $('home').classList.add('hidden');$('room').classList.remove('hidden');$('roomCode').textContent=code;showNotice('Du bist dem Raum beigetreten. Deine Sitzung wird auf diesem Gerät gemerkt.','success');
+});
+socket.on('notice',n=>showNotice(n.message,n.type));
+socket.on('state',s=>{
+  const oldDiceKey = state ? JSON.stringify(state.players.find(p=>p.id===state.meId)?.dice||[]) : '';
+  state=s;$('roomCode').textContent=s.code;$('start').disabled=!s.canStart;$('start').textContent=s.status==='lobby'?'Spiel starten (mind. 2 Spieler)':s.status==='finished'?'Spiel beendet':'Spiel läuft';
+  $('lobbyControls').classList.toggle('hidden',s.status!=='lobby');$('players').innerHTML='';
+  s.players.forEach(p=>{const el=document.createElement('div');el.className='player'+(p.id===s.currentTurnId?' current':'');el.innerHTML='<div class="name"></div><small></small>';el.querySelector('.name').textContent=p.name+(p.id===s.meId?' (du)':'');el.querySelector('small').textContent=`${p.diceCount} Würfel${p.connected?'':' · getrennt'}${p.id===s.currentTurnId?' · am Zug':''}`;$('players').appendChild(el);});
+  const b=s.currentBid;$('currentBid').textContent=b?`${b.quantity} × ${b.face==='J'?'Joker':b.face}`:'Noch kein Gebot';
+  $('turnLabel').textContent=s.currentTurnId?(s.players.find(p=>p.id===s.currentTurnId)?.name+' ist am Zug'):'';$('gameMessage').textContent=s.message||'';
+  const banner=$('ruleBanner');banner.classList.toggle('hidden',!s.oneDieRound);
+  banner.textContent=s.oneDieRound?(s.lockedFace?`☠ Sonderrunde: Nur ${s.lockedFace}er dürfen geboten werden. Joker zählen nicht und ersetzen keine Zahl.`:'☠ Sonderrunde: Spieler mit einem Würfel eröffnet. Der erste Zahlenwert (2–6) legt die Reihe fest; Joker zählen nicht.') : '';
+  $('myDicePanel').classList.toggle('hidden',s.status!=='playing');$('turnPanel').classList.toggle('hidden',s.status!=='playing');
+  $('turnHelp').textContent=s.canAct?(s.oneDieRound?(s.lockedFace?`Nur die ${s.lockedFace}er-Reihe: Erhöhe die Anzahl oder zweifle an.`:'Du eröffnest die Sonderrunde: Wähle eine Zahl von 2 bis 6. Joker sind ausgeschlossen.'):'Du bist dran. Der Zahlenwert hat Vorrang vor der Anzahl: 3 Vierer → 1 Fünfer ist höher.'):'Warte, bis du an der Reihe bist.';
+  $('bidButton').disabled=!s.canAct;$('challengeButton').disabled=!s.canAct||!b;
+  $('quantity').innerHTML='';const total=s.players.reduce((n,p)=>n+(p.diceCount||0),0);for(let i=1;i<=Math.max(1,total);i++){const o=document.createElement('option');o.value=i;o.textContent=i;$('quantity').appendChild(o);}
+  const faceSel=$('face');[...faceSel.options].forEach(o=>{o.disabled=!!s.oneDieRound&&(o.value==='J'||(s.lockedFace&&o.value!==s.lockedFace));});
+  if(b){$('quantity').value=Math.min(total,b.quantity+1);faceSel.value=s.oneDieRound&&s.lockedFace?s.lockedFace:b.face;}
+  const newDiceKey=JSON.stringify(s.players.find(p=>p.id===s.meId)?.dice||[]);renderDice(oldDiceKey!==newDiceKey);
+});
+function renderDice(animate=true){
+ if(!state)return;const me=state.players.find(p=>p.id===state.meId);if(!me)return;$('diceCountLabel').textContent=`(${me.diceCount} im Spiel)`;
+ const el=$('myDice');el.innerHTML='';(me.dice||[]).forEach((d,i)=>{const die=document.createElement('div');die.className='die'+(d==='J'?' joker':'')+(hiddenDice.has(i)?' removed':'');die.textContent=d==='J'?'☠':d;if(!animate)die.style.animation='none';const x=document.createElement('button');x.textContent='×';x.title='Würfel aus Anzeige entfernen';x.onclick=()=>{hiddenDice.add(i);renderDice(false);};die.appendChild(x);el.appendChild(die);});
+}
+socket.on('disconnect',()=>showNotice('Verbindung unterbrochen. Deine Sitzung bleibt gespeichert; erneuter Verbindungsversuch läuft…','error'));
+socket.on('connect',()=>{const session=JSON.parse(localStorage.getItem('layersDiceSession')||'null');if(session?.code&&session?.token){socket.emit('resumeSession',{code:session.code,token:session.token});}else if(joined)showNotice('Verbindung wiederhergestellt.','success');});
+</script>
+</body>
+</html>
